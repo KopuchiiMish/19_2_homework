@@ -1,1 +1,1 @@
-# 19_2_homework
+# django_shop
