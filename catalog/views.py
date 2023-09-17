@@ -18,4 +18,4 @@ def contacts(request):
 
 
 def product(request, pk):
-    return render(request, 'catalog/product.html', {'product': Product.objects.get(pk=pk)})
+    return render(request, 'catalog/product.html')
