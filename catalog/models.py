@@ -16,6 +16,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    objects = None
     name = models.CharField(max_length=100, verbose_name='Наименование')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
     image = models.ImageField(verbose_name='Изображение', upload_to='img/', **NULLABLE)
@@ -30,3 +31,17 @@ class Product(models.Model):
     class Meta:
         verbose_name = 'Продукт'
         verbose_name_plural = 'Продукты'
+
+
+class Contacts(models.Model):
+    objects = None
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    phone = models.CharField(max_length=15, verbose_name='Телефон')
+    message = models.TextField(verbose_name='Сообщение')
+
+    def __str__(self):
+        return f"{self.name}({self.phone})"
+
+    class Meta:
+        verbose_name = 'Контакт'
+        verbose_name_plural = 'Контакты'
