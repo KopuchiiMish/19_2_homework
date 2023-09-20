@@ -1,21 +1,40 @@
-from django.shortcuts import render
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView, DetailView, CreateView
 from catalog.models import *
 
 
-def home(request):
-    print(Product.objects.all()[::-1][:5])
-    return render(request, 'catalog/home.html', {'products': Product.objects.all()})
+class CatalogView(TemplateView):
+    template_name = 'catalog/home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.all()
+        return context
 
 
-def contacts(request):
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        phone = request.POST.get('phone')
-        message = request.POST.get('message')
-        Contacts.objects.create(name=name, phone=phone, message=message)
-        print(f'У вас новое сообщение от: {name}(телефон:{phone}): {message}')
-    return render(request, 'catalog/contacts.html')
+class ContactsView(TemplateView):
+    template_name = 'catalog/contacts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['contacts'] = Contacts.objects.get(pk=1)
+        return context
 
 
-def product(request, pk):
-    return render(request, 'catalog/product.html', {'product': Product.objects.get(pk=pk)})
+class ProductView(DetailView):
+    model = Product
+    template_name = 'catalog/product.html'
+
+
+class CategoryCreateView(CreateView):
+    model = Category
+    fields = ('name', 'description')
+    template_name = 'catalog/cat_create.html'
+    success_url = reverse_lazy('home')
+
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = ('name', 'description', 'price', 'image', 'category')
+    template_name = 'catalog/prod_create.html'
+    success_url = reverse_lazy('home')
