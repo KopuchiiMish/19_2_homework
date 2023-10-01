@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from catalog.models import *
+from users.models import User
 
 
 @admin.register(Product)
@@ -21,3 +22,4 @@ class VersionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Contacts)
+admin.site.register(User)
