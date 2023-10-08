@@ -11,15 +11,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 from os import getenv
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from.env file
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g-s%%qctxf1yqajk4&r7ltm8!zkk+j_mdxqc074=#a37r1-m6g'
+SECRET_KEY = getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -78,8 +82,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'shop',
-        'USER': 'postgres',
-        'PASSWORD': 'Qwerty12345'
+        'USER': getenv('DATABASE_USER'),
+        'PASSWORD': getenv('DATABASE_PASSWORD'),
     }
 }
 
@@ -125,11 +129,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Настройки для email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'kreebok@yandex.ru'
-EMAIL_HOST_PASSWORD = getenv('YANDEX_SMTP_PASS')
+EMAIL_HOST = getenv('EMAIL_HOST')
+EMAIL_PORT = int(getenv('EMAIL_PORT'))
+EMAIL_USE_SSL = getenv('EMAIL_USE_SSL') == '1'
+EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
@@ -144,10 +148,10 @@ LOGOUT_REDIRECT_URL = 'home'
 
 LOGIN_URL = 'login'
 
-CACHE_ENABLED = True
+CACHE_ENABLED = getenv('CACHE_ENABLED') == '1'
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": 'redis://127.0.0.1:6379',
+        "LOCATION": getenv('CACHES_LOCATION'),
     }
 }

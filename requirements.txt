@@ -28,3 +28,4 @@ six~=1.16.0
 asttokens~=2.4.0
 executing==2.0.0
 pytils~=0.4.1
+python-dotenv==1.0.0
