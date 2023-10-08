@@ -45,12 +45,6 @@ class VersionForm(MixinForm, forms.ModelForm):
         return clean_product
 
 
-class CategoryForm(MixinForm, forms.ModelForm):
-    class Meta:
-        model = Category
-        fields = '__all__'
-
-
 class ContactForm(MixinForm, forms.ModelForm):
     class Meta:
         model = Contacts
