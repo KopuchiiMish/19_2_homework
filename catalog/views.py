@@ -1,7 +1,9 @@
+from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, DetailView, CreateView, UpdateView, DeleteView
-from catalog.forms import ProductForm, VersionForm, CategoryForm
+from django.views.generic import TemplateView, DetailView, CreateView, UpdateView, DeleteView, ListView
+
+from catalog.forms import ProductForm, VersionForm, CategoryForm, ContactForm
 from catalog.models import *
 
 
@@ -15,19 +17,47 @@ class CatalogView(TemplateView):
 
 
 class ContactsView(TemplateView):
+    model = Contacts
+    form_class = ContactForm
     template_name = 'catalog/contacts.html'
+    success_url = reverse_lazy('home')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['contacts'] = Contacts.objects.get(pk=1)
-        return context
+    def form_valid(self, form):
+        if form.is_valid():
+            self.object = form.save()
+            send_mail(
+                subject='У вас новое сообщение',
+                message=f'{self.object}\n{self.object.message}',
+                from_email='reaver74@yandex.ru',
+                recipient_list=['reaver_std@mail.ru'],
+                fail_silently=False
+            )
+        return super().form_valid(form)
 
 
 class CategoryCreateView(CreateView):
     model = Category
     form_class = CategoryForm
-    template_name = 'catalog/category_create.html'
+    template_name = 'catalog/category_list.html'
     success_url = reverse_lazy('home')
+
+
+class CategoryListView(ListView):
+    model = Category
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class CategoryDetailView(DetailView):
+    model = Category
+    template_name = 'catalog/category.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.filter(category=self.kwargs['pk'])
+        return context
 
 
 class ProductCreateView(CreateView):

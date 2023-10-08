@@ -1,6 +1,6 @@
 from django import forms
 
-from catalog.models import Product, Version, Category
+from catalog.models import Product, Version, Category, Contacts
 
 stop_words = ['казино', 'криптовалюта', 'крипта', 'биржа',
               'дешево', 'бесплатно', 'обман', 'полиция', 'радар']
@@ -35,18 +35,23 @@ class ProductForm(MixinForm, forms.ModelForm):
         return clean_description
 
 
-class VersionForm(forms.ModelForm):
+class VersionForm(MixinForm, forms.ModelForm):
     class Meta:
         model = Version
         exclude = ('product',)
 
     def clean_product(self):
         clean_product = self.cleaned_data.get('product')
-
         return clean_product
 
 
 class CategoryForm(MixinForm, forms.ModelForm):
     class Meta:
         model = Category
+        fields = '__all__'
+
+
+class ContactForm(MixinForm, forms.ModelForm):
+    class Meta:
+        model = Contacts
         fields = '__all__'

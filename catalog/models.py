@@ -17,6 +17,7 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
 
+# Create your models here.
 class Product(models.Model):
     name = models.CharField(max_length=100, verbose_name='Наименование')
     description = models.TextField(verbose_name='Описание', **NULLABLE)
