@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -13,11 +13,14 @@ class CatalogView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
+        if not self.request.user.is_staff:
+            context['products'] = Product.objects.all().filter(is_published=True)
+        else:
+            context['products'] = Product.objects.all()
         return context
 
 
-class ContactsView(TemplateView):
+class ContactsView(CreateView):
     model = Contacts
     form_class = ContactForm
     template_name = 'catalog/contacts.html'
@@ -40,28 +43,34 @@ class CategoryDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.filter(category=self.kwargs['pk'])
+        if not self.request.user.is_staff:
+            context['products'] = Product.objects.filter(category=self.kwargs['pk']).filter(is_published=True)
+        else:
+            context['products'] = Product.objects.filter(category=self.kwargs['pk'])
         return context
 
 
-class ProductCreateView(LoginRequiredMixin, CreateView):
+class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_create.html'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        self.object = form.save()
-        self.object.owner = self.request.user
-        self.object.save()
+        obj = form.save()
+        obj.owner = self.request.user
+        obj.save()
         return super().form_valid(form)
+
+    def test_func(self):
+        return not self.request.user.is_staff
 
 
 class ProductDetailView(DetailView):
     model = Product
 
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
 
@@ -81,13 +90,24 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         context_data = self.get_context_data()
         formset = context_data['formset']
-        self.object = form.save()
+        obj = form.save()
         if formset.is_valid():
-            formset.instance = self.object
+            formset.instance = obj
             formset.save()
+        else:
+            form.add_error(None, 'Ошибка в версиях')
+            return self.form_invalid(form)
         return super().form_valid(form)
 
+    def test_func(self):
+        if self.request.user.is_staff:
+            return False
+        return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('home')
+
+    def test_func(self):
+        return not self.request.user.is_staff
