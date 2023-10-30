@@ -12,17 +12,17 @@
             </div>
             <div class="card-body">
                 {% if user.is_staff %}
-                {% if not product.is_published %}
-                <p class="card-text alert alert-danger">{{ product.name }}</p>
-                {% endif %}
+                    {% if not product.is_published %}
+                        <p class="card-text alert alert-danger">{{ product.name }}</p>
+                    {% endif %}
                 {% else %}
-                <p>{{ product.name }}</p>
+                    <p>{{ product.name }}</p>
                 {% endif %}
-                <p>{{ product.description|truncatechars:100 }}</p>
+                    <p>{{ product.description|truncatechars:100 }}</p>
                 {% for version in product.versions.all %}
-                {% if version.current_version %}
-                <p class="card-text text-muted small">Версия: {{ version.number_version }}</p>
-                {% endif %}
+                    {% if version.current_version %}
+                        <p class="card-text text-muted small">Версия: {{ version.number_version }}</p>
+                    {% endif %}
                 {% endfor %}
                 <p class="card-text text-muted">Владелец: {{ product.owner|default:'Django shop' }}</p>
             </div>
