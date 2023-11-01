@@ -1,8 +1,10 @@
 from django.contrib import admin
+
 from catalog.models import *
 from users.models import User
 
 
+# Register your models here.
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'category', 'is_published')

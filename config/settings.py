@@ -19,6 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Load environment variables from.env file
 load_dotenv(dotenv_path=BASE_DIR / '.env')
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -29,6 +30,7 @@ SECRET_KEY = getenv('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 # Application definition
 
@@ -75,6 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -86,6 +89,7 @@ DATABASES = {
         'PASSWORD': getenv('DATABASE_PASSWORD'),
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -105,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -115,6 +120,7 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -130,7 +136,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Настройки для email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = getenv('EMAIL_HOST')
-EMAIL_PORT = (getenv('EMAIL_PORT'))
+EMAIL_PORT = int(getenv('EMAIL_PORT'))
 EMAIL_USE_SSL = getenv('EMAIL_USE_SSL') == '1'
 EMAIL_HOST_USER = getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = getenv('EMAIL_HOST_PASSWORD')
@@ -145,7 +151,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
-
 LOGIN_URL = 'login'
 
 CACHE_ENABLED = getenv('CACHE_ENABLED') == '1'

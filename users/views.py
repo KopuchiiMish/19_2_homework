@@ -13,6 +13,7 @@ from config import settings
 from users.forms import UserCreationForm, UserUpdateForm
 from users.models import User
 from users.token import account_activation_token
+
 import random
 
 
@@ -34,6 +35,7 @@ class UserCreateView(CreateView):
         user = form.save()
         user.is_active = False
         user.save()
+
         # Отправляем письмо со ссылкой активации пользователя
         current_site = get_current_site(self.request)
         mail_subject = 'Ссылка для активации пользователя'
@@ -48,6 +50,7 @@ class UserCreateView(CreateView):
             mail_subject, message, to=[to_email]
         )
         email.send()
+
         return super().form_valid(form)
 
 

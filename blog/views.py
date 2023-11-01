@@ -5,13 +5,14 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
+from blog.forms import BlogForm
 from blog.models import Blog
 
 
 # Create your views here.
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
-    fields = ('title', 'text', 'image')
+    form_class = BlogForm
     success_url = reverse_lazy('blog_list')
 
     def form_valid(self, form):
@@ -43,8 +44,8 @@ class BlogDetailView(DetailView):
             send_mail(
                 subject='Уведомление о достижении',
                 message='Поздравляем! Статья набрала 100 просмотров в блоге.',
-                from_email='kreebok@yandex.ru',
-                recipient_list=['kreebok@yandex.ru'],
+                from_email='reaver74@yandex.ru',
+                recipient_list=['reaver_std@mail.ru'],
                 fail_silently=False
             )
         obj.save()
@@ -53,7 +54,7 @@ class BlogDetailView(DetailView):
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
-    fields = ('title', 'text', 'image')
+    form_class = BlogForm
 
     def form_valid(self, form):
         if form.is_valid():
@@ -71,6 +72,7 @@ class BlogDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('blog_list')
 
 
+@login_required
 def toggle_active(request, slug):
     blog = get_object_or_404(Blog, slug=slug)
     if blog.to_publish:
