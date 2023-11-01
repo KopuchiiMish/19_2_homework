@@ -1,36 +1,36 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
-<div class="pricing-header px-3 py-3 pt-md-3 pb-md-3 mx-auto text-center">
-    <h1 class="display-4">Главная</h1>
-</div>
-<div class="row text-center">
-    {% for product in products %}
-    <div class="col-3 mb-2 mt-2">
-        <div class="card" style="width: 29rem; height: 22rem">
-            <div class="card-header">
-                <h5 class="card-title">{{ product.category }}</h5>
-            </div>
-            <div class="card-body">
-                {% if user.is_staff %}
-                    {% if not product.is_published %}
-                        <p class="card-text alert alert-danger">{{ product.name }}</p>
-                    {% endif %}
-                {% else %}
-                    <p>{{ product.name }}</p>
-                {% endif %}
-                    <p>{{ product.description|truncatechars:100 }}</p>
-                {% for version in product.versions.all %}
-                    {% if version.current_version %}
-                        <p class="card-text text-muted small">Версия: {{ version.number_version }}</p>
-                    {% endif %}
-                {% endfor %}
-                <p class="card-text text-muted">Владелец: {{ product.owner|default:'Django shop' }}</p>
-            </div>
-            <div class="card-footer">
-                <a class="custom-btn btn-11" href="{% url 'product' product.id %}">Подробнее</a>
-            </div>
-        </div>
+    <div class="pricing-header px-3 py-3 pt-md-3 pb-md-3 mx-auto text-center">
+        <h1 class="display-4">Главная</h1>
     </div>
-    {% endfor %}
-</div>
+    <div class="row text-center">
+        {% for product in products %}
+            <div class="col-3 mb-2 mt-2">
+                <div class="card" style="width: 29rem; height: 22rem">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ product.category }}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if user.is_staff %}
+                            {% if not product.is_published %}
+                                <p class="card-text alert alert-danger">{{ product.name }}</p>
+                            {% endif %}
+                        {% else %}
+                            <p>{{ product.name }}</p>
+                        {% endif %}
+                        <p>{{ product.description|truncatechars:100 }}</p>
+                        {% for version in product.versions.all %}
+                            {% if version.current_version %}
+                                <p class="card-text text-muted small">Версия: {{ version.number_version }}</p>
+                            {% endif %}
+                        {% endfor %}
+                        <p class="card-text text-muted">Владелец: {{ product.owner|default:'JustSomeStore' }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="custom-btn btn-11" href="{% url 'product' product.id %}">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}
