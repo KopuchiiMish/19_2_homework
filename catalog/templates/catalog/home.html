@@ -24,7 +24,7 @@
                                 <p class="card-text text-muted small">Версия: {{ version.number_version }}</p>
                             {% endif %}
                         {% endfor %}
-                        <p class="card-text text-muted">Владелец: {{ product.owner|default:'JustSomeStore' }}</p>
+                        <p class="card-text text-muted">Владелец: {{ product.owner|default:'JustSomeShop' }}</p>
                     </div>
                     <div class="card-footer">
                         <a class="custom-btn btn-11" href="{% url 'product' product.id %}">Подробнее</a>

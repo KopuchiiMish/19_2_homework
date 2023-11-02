@@ -18,7 +18,7 @@
                             <p class="card-text">Версия: {{ version.number_version }}</p>
                         {% endif %}
                     {% endfor %}
-                    <p class="card-text">Владелец: {{ product.owner|default:'JustSomeStore' }}</p>
+                    <p class="card-text">Владелец: {{ product.owner|default:'JustSomeShop' }}</p>
                     <a href="{% url 'home' %}" class="custom-btn btn-11">К списку товаров</a>
                 </div>
                 {% if user.is_authenticated and product.owner.email == user.email and not user.is_staff%}
