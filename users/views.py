@@ -62,30 +62,28 @@ class UserUpdateView(UpdateView):
     def get_object(self, queryset=None):
         return self.request.user
 
+    def reset_password(request):
+        new_password = ''.join([str(random.randint(1, 9)) for _ in range(8)])
+        request.user.set_password(new_password)
+        request.user.save()
+        send_mail(
+            subject='Сброс пароля',
+            message=f'Сброс пароля на сайте Django Shop Project\n\nВаш новый пароль {new_password}',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[request.user.email],
+        )
+        return redirect(reverse_lazy('home'))
 
-def reset_password(request):
-    new_password = ''.join([str(random.randint(1, 9)) for _ in range(8)])
-    request.user.set_password(new_password)
-    request.user.save()
-    send_mail(
-        subject='Сброс пароля',
-        message=f'Сброс пароля на сайте Django Shop Project\n\nВаш новый пароль {new_password}',
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[request.user.email],
-    )
-    return redirect(reverse_lazy('home'))
-
-
-def activate(request, uidb64, token):
-    user = get_user_model()
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = user.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.save()
-        return redirect(reverse_lazy('success_verify'))
-    else:
-        return redirect(reverse_lazy('failure_verify'))
+    def activate(request, uidb64, token):
+        user = get_user_model()
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = user.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            return redirect(reverse_lazy('success_verify'))
+        else:
+            return redirect(reverse_lazy('failure_verify'))

@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.forms import inlineformset_factory
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -20,7 +21,7 @@ class CatalogView(TemplateView):
         return context
 
 
-class ContactsView(CreateView):
+class ContactsView(LoginRequiredMixin, CreateView):
     model = Contacts
     form_class = ContactForm
     template_name = 'catalog/contacts.html'
@@ -32,9 +33,9 @@ class ContactsView(CreateView):
         return super().form_valid(form)
 
 
-def categories(request):
-    category_list = categories_get_cache()
-    return render(request, 'catalog/categories.html', {'object_list': category_list})
+    def categories(request):
+        category_list = categories_get_cache()
+        return render(request, 'catalog/categories.html', {'object_list': category_list})
 
 
 class CategoryDetailView(DetailView):
@@ -54,6 +55,7 @@ class ProductCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_create.html'
+    permission_required = 'catalog.product_create'
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
@@ -73,6 +75,7 @@ class ProductDetailView(DetailView):
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    permission_required = 'catalog.product_update'
 
     def get_success_url(self):
         return reverse_lazy('product', kwargs={'pk': self.object.pk})
