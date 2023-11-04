@@ -33,9 +33,9 @@ class ContactsView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-    def categories(request):
-        category_list = categories_get_cache()
-        return render(request, 'catalog/categories.html', {'object_list': category_list})
+def categories(request):
+    category_list = categories_get_cache()
+    return render(request, 'catalog/categories.html', {'object_list': category_list})
 
 
 class CategoryDetailView(DetailView):
